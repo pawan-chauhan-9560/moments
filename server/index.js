@@ -2,10 +2,24 @@ import express from "express";
 import bodyParser from "body-parser";
 import mongoose from "mongoose";
 import cors from 'cors';
-import logger from 'pino-http';
-
+import log4js from 'log4js';
+import postRoutes from './routes/posts.js';
+const logger = log4js.getLogger();
 
 const app = express();
+
+//Logger config
+log4js.configure({
+    appenders: {
+        everything: { type: 'dateFile', filename: 'all-the-logs.log' }
+    },
+    categories: {
+        default: { appenders: ['everything'], level: 'debug' }
+    }
+});
+
+app.use('/posts', postRoutes);
+
 
 app.use(bodyParser.json({ limit: "30mb", extended: true }));
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
